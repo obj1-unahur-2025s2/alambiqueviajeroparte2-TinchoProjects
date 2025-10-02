@@ -19,15 +19,13 @@ object luke{
 }
 
 object alambiqueVeloz {
-    var rapido = true
-    var combustible = 20
-    const consumoPorViaje = 10
+    var property esRapido = true
+    var property tanqueLleno = true
     var patente = "AB123JK"
-    method puedeFuncionar() = combustible >= consumoPorViaje
+    method puedeFuncionar() = tanqueLleno
     method desgaste() {
-        combustible = combustible - consumoPorViaje
+        tanqueLleno = false
     }
-    method rapido() = rapido
     method patenteValida() = patente.head() == "A"
 }
 
@@ -39,11 +37,11 @@ object antigualla {
         return gangsters.fold(0,{acum,item=>acum+item.length()})
     }
     method desgaste(){
-        self.bajarPrimerGangster()
+        self.perderUnGangster()
     }
 
-    method bajarPrimerGangster(){
-        gangsters.remove(gangsters.first())
+    method perderUnGangster(){
+        self.bajarGangster(gangsters.anyOne())
     }
 
     method bajarGangster(unGangster){
@@ -56,13 +54,14 @@ object antigualla {
     method esRapido() {
         return gangsters.size() > 6
     }
-    method patenteValida() = chatarra.rapido()
+    method puedeFuncionar() = !gangsters.isEmpty()
+    method patenteValida() = chatarra.esRapido()
 }
 object chatarra {
     var cañones = 10
     var municiones = "ACME"
-    method puedeFuncionar() = municiones == "ACME" and cañones.between(6,12)
-    method rapido() = municiones.size() < cañones
+    method puedeFuncionar() = true//municiones == "ACME" and cañones.between(6,12)
+    method esRapido() = municiones.size() < cañones
     method desgaste(){
         cañones = (cañones / 2).roundUp(0)
         if (cañones < 5 )
@@ -77,8 +76,8 @@ object chatarra {
 object convertible{
     //Lista de posibles vehiculos sucesivos. Cambia antes de la carrera
     var convertido = antigualla
-    method puedeFuncionar() = convertido.puedeFuncionar() 
-    method rapido() = convertido.rapido()
+    method tanqueLleno() = convertido.tanqueLleno() 
+    method esRapido() = convertido.esRapido()
     method desgaste(){
         convertido.desgaste()
     }
@@ -90,8 +89,8 @@ object convertible{
 }
 
 object moto{
-    method rapido() = true
-    method puedeFuncionar() = not self.rapido() //moto x self
+    method esRapido() = true
+    method tanqueLleno() = false
     method desgaste() { }
     method patenteValida() = false
 }
@@ -100,20 +99,20 @@ object moto{
 
 object paris{
     method recuerdoTipico() = "Llavero Torre Eiffel"
-    method puedeLlegar(movil) =  movil.puedeFuncionar() 
+    method puedeLlegar(vehiculo) =  vehiculo.tanqueLleno() 
     
 }
 
 object buenosAires{
     method recuerdoTipico() = "Mate"
-    method puedeLlegar(auto) =  auto.rapido() 
+    method puedeLlegar(vehiculo) =  vehiculo.esRapido() 
 }
 
 object bagdad {
     var recuerdo = "bidon de petroleo"
     method recuerdoTipico() = recuerdo
     method recuerdo(nuevo) {recuerdo = nuevo }
-    method puedeLlegar(cualquierCosa) = true
+    method puedeLlegar(vehiculo) = true
 }
 
 object lasVegas{
@@ -124,7 +123,6 @@ object lasVegas{
 }
 
 object hurlingham{
-   method puedeLlegar(vehiculo) =
-     vehiculo.puedeFuncionar() and vehiculo.rapido() and vehiculo.patenteValida()
+   method puedeLlegar(vehiculo) = vehiculo.tanqueLleno() and vehiculo.esRapido()
   method recuerdoTipico() = "sticker de la Unahur"
 }

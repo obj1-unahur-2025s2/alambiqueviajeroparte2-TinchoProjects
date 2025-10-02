@@ -1,25 +1,44 @@
 import elAlambiqueViajero.*
 
 object carrera {
-    const inscriptos = []
-    const rechazados = []
-    var destinoCarrera = null
+    const property inscriptos = []
+    const property rechazados = []
+    var destinoCarrera = paris
 
-    method inscripcion() {
-
+    method inscribir(unVehiculo) {
+        if (destinoCarrera.puedeLlegar(unVehiculo)) {
+            self.aprobarVehiculo(unVehiculo)
+        } else {
+            self.rechazarVehiculo(unVehiculo)
+        }
     }
 
-    method iniciarCarrera() {
+    method aprobarVehiculo(unVehiculo) {
+        if (!inscriptos.any({v => v == unVehiculo}) && destinoCarrera.puedeLlegar(unVehiculo)){
+            rechazados.remove(unVehiculo)
+            inscriptos.add(unVehiculo)
+        }
+    }
 
+    method rechazarVehiculo(unVehiculo) {
+        if (!rechazados.any({v => v == unVehiculo})){
+            inscriptos.remove(unVehiculo)
+            rechazados.add(unVehiculo)
+        }
+    }
+
+    method reevaluarInscriptos() {
+        inscriptos.forEach({v => self.inscribir(v)})
+        rechazados.forEach({v => self.inscribir(v)})
     }
 
     method replanificacion(nuevoDestino) {
         destinoCarrera = nuevoDestino
-        //¿Reevaluación de carrera?
+        self.reevaluarInscriptos()
     }
 
     method ganadorCarrera() {
-
+        return inscriptos.filter(({v => v.velocidad()}).max())
     }
 }
 
